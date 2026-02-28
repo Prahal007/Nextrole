@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: pdfzen-resume-optimizer
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/pdfzen}
+    username: ${DATABASE_USERNAME:pdfzen}
+    password: ${DATABASE_PASSWORD:pdfzen}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: public
+    open-in-view: false
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+# OpenAPI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+# App config
+app:
+  upload-dir: ${UPLOAD_DIR:./uploads}
+  ai:
+    provider: ${AI_PROVIDER:openai}
+    api-key: ${OPENAI_API_KEY:${AI_API_KEY:}}
+    model: ${AI_MODEL:gpt-4o-mini}
