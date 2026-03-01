@@ -3,7 +3,7 @@ import { useState, useRef } from 'react'
 import Link from 'next/link'
 
 const AUTH = 'Basic ' + btoa('user@pdfzen.ai:password')
-const API = 'http://localhost:8080'
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
 export default function Dashboard() {
   const [file, setFile] = useState<File | null>(null)

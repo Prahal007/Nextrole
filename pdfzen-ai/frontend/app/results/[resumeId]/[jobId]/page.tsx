@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
 const AUTH = 'Basic ' + btoa('user@pdfzen.ai:password')
-const API = 'http://localhost:8080'
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
 function ATSMeter({ score }) {
   const [current, setCurrent] = useState(0)
