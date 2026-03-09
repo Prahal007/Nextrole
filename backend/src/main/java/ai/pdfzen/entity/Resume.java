@@ -1,7 +1,6 @@
 package ai.pdfzen.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Lob;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
