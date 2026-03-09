@@ -20,6 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class ResumeOptimizationService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ResumeOptimizationService.class);
 
     private final ResumeRepository resumeRepository;
     private final OptimizationJobRepository jobRepository;

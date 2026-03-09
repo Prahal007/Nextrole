@@ -1,5 +1,7 @@
 package ai.pdfzen.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +27,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class AiOptimizationService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AiOptimizationService.class);
 
     private static final String OPENAI_CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions";
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
