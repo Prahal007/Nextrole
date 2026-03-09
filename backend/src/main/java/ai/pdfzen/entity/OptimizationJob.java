@@ -49,7 +49,6 @@ public class OptimizationJob {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    @org.hibernate.annotations.CreationTimestamp
     private Instant createdAt;
 
     @Column(name = "completed_at")
