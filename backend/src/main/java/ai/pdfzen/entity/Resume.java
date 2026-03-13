@@ -3,6 +3,8 @@ package ai.pdfzen.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,22 +26,20 @@ public class Resume {
     @Column(name = "original_filename", nullable = false)
     private String originalFilename;
 
-    // Kept for backward compatibility — stores a logical name, not a filesystem path
     @Column(name = "stored_path", nullable = false)
     private String storedPath;
-
-    @Column(name = "file_size_bytes")
-    private Long fileSizeBytes;
-
-    // PDF bytes stored directly in PostgreSQL — no filesystem needed
-    @Lob
-    @Column(name = "file_content", columnDefinition = "bytea")
-    private byte[] fileContent;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     @Builder.Default
     private ResumeStatus status = ResumeStatus.UPLOADED;
+
+    @Column(name = "file_size_bytes")
+    private Long fileSizeBytes;
+
+    @JdbcTypeCode(SqlTypes.BINARY)
+    @Column(name = "file_content", columnDefinition = "bytea")
+    private byte[] fileContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
