@@ -1,0 +1,16 @@
+[build]
+builder = "NIXPACKS"
+
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.build]
+nixPkgs = ["nodejs_20"]
+cmds = ["npm install && npm run build"]
+
+[start]
+cmd = "npm start"
+
+[variables]
+NODE_ENV = "production"
+PORT = "3000"

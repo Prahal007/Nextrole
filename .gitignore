@@ -15,6 +15,9 @@ target/
 .env
 .env.local
 .env.*.local
+.env.railway
+.env.local.example
+
 
 # IDE
 .idea/
