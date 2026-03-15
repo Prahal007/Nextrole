@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface OptimizationJobRepository extends JpaRepository<OptimizationJob, String> {
+public interface OptimizationJobRepository extends JpaRepository<OptimizationJob, UUID> {
 
-    List<OptimizationJob> findByResumeIdOrderByCreatedAtDesc(String resumeId);
+    List<OptimizationJob> findByResumeIdOrderByCreatedAtDesc(UUID resumeId);
 
-    List<OptimizationJob> findByResumeIdAndStatus(String resumeId, JobStatus status);
+    List<OptimizationJob> findByResumeIdAndStatus(UUID resumeId, JobStatus status);
 }

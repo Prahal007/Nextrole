@@ -32,9 +32,9 @@ public class ResumeOptimizationService {
 
     @Transactional
     public OptimizationJob createAndRunJob(String resumeId, String userId, OptimizationRequest request) {
-        Resume resume = resumeRepository.findById(resumeId)
+        Resume resume = resumeRepository.findById(UUID.fromString(resumeId))
                 .orElseThrow(() -> new IllegalArgumentException("Resume not found: " + resumeId));
-        if (!resume.getUser().getId().equals(userId)) {
+        if (!resume.getUser().getId().toString().equals(userId)) {
             throw new IllegalArgumentException("Resume does not belong to user");
         }
 

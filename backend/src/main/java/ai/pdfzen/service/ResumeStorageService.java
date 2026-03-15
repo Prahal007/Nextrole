@@ -20,7 +20,7 @@ public class ResumeStorageService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Resume store(String userId, MultipartFile file) throws IOException {
+    public Resume store(UUID userId, MultipartFile file) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
 

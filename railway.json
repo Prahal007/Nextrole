@@ -1,0 +1,47 @@
+{
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "docker compose up --build",
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  },
+  "services": [
+    {
+      "name": "postgres",
+      "source": ".",
+      "dockerfilePath": "./docker-compose.yml",
+      "dockerContext": ".",
+      "healthcheckPath": "/health",
+      "port": 5432
+    },
+    {
+      "name": "backend",
+      "source": "./backend",
+      "dockerfilePath": "./backend/Dockerfile",
+      "dockerContext": "./backend",
+      "healthcheckPath": "/api/health",
+      "port": 8080,
+      "env": [
+        "DATABASE_URL=jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}",
+        "DATABASE_USERNAME=${{Postgres.PGUSER}}",
+        "DATABASE_PASSWORD=${{Postgres.PGPASSWORD}}",
+        "SERVER_PORT=8080"
+      ]
+    },
+    {
+      "name": "frontend",
+      "source": "./frontend",
+      "dockerfilePath": "./frontend/Dockerfile",
+      "dockerContext": "./frontend",
+      "healthcheckPath": "/",
+      "port": 3000,
+      "env": [
+        "API_URL=http://backend:8080"
+      ]
+    }
+  ]
+}

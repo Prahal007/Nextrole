@@ -9,6 +9,7 @@ import org.hibernate.type.SqlTypes;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "resumes")
@@ -21,7 +22,7 @@ public class Resume {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(name = "original_filename", nullable = false)
     private String originalFilename;

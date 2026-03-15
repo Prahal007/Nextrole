@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -14,8 +15,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class OptimizationResponse {
 
-    private String jobId;
-    private String resumeId;
+    private UUID jobId;
+    private UUID resumeId;
     private String status;
     private String extractedText;
     private String optimizedText;

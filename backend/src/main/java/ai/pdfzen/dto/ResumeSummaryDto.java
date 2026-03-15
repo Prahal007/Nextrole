@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -13,7 +14,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class ResumeSummaryDto {
 
-    private String id;
+    private UUID id;
     private String originalFilename;
     private Long fileSizeBytes;
     private String status;

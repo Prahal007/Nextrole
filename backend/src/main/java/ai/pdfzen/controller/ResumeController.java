@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,7 +46,7 @@ public class ResumeController {
     public ResponseEntity<ResumeUploadResponse> upload(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam("file") MultipartFile file) throws IOException {
-        String userId = userRepository.findByEmail(userDetails.getUsername())
+        UUID userId = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found")).getId();
         Resume resume = resumeStorageService.store(userId, file);
         return ResponseEntity.ok(ResumeUploadResponse.builder()
@@ -58,7 +59,7 @@ public class ResumeController {
 
     @GetMapping
     public ResponseEntity<List<ResumeSummaryDto>> list(@AuthenticationPrincipal UserDetails userDetails) {
-        String userId = userRepository.findByEmail(userDetails.getUsername())
+        UUID userId = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found")).getId();
         List<ResumeSummaryDto> list = resumeRepository.findByUserIdOrderByCreatedAtDesc(userId)
                 .stream()
@@ -70,8 +71,8 @@ public class ResumeController {
     @GetMapping("/{resumeId}")
     public ResponseEntity<ResumeSummaryDto> get(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable String resumeId) {
-        String userId = userRepository.findByEmail(userDetails.getUsername())
+            @PathVariable UUID resumeId) {
+        UUID userId = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found")).getId();
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(() -> new IllegalArgumentException("Resume not found"));
@@ -84,19 +85,19 @@ public class ResumeController {
     @PostMapping("/{resumeId}/optimize")
     public ResponseEntity<OptimizationResponse> optimize(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable String resumeId,
+            @PathVariable UUID resumeId,
             @Valid @RequestBody OptimizationRequest request) {
-        String userId = userRepository.findByEmail(userDetails.getUsername())
+        UUID userId = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found")).getId();
-        OptimizationJob job = optimizationService.createAndRunJob(resumeId, userId, request);
+        OptimizationJob job = optimizationService.createAndRunJob(resumeId.toString(), userId.toString(), request);
         return ResponseEntity.ok(toResponse(job));
     }
 
     @GetMapping("/{resumeId}/jobs")
     public ResponseEntity<List<OptimizationResponse>> listJobs(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable String resumeId) {
-        String userId = userRepository.findByEmail(userDetails.getUsername())
+            @PathVariable UUID resumeId) {
+        UUID userId = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found")).getId();
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(() -> new IllegalArgumentException("Resume not found"));
@@ -113,9 +114,9 @@ public class ResumeController {
     @GetMapping("/{resumeId}/jobs/{jobId}/download-pdf")
     public ResponseEntity<byte[]> downloadOptimizedPdf(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable String resumeId,
-            @PathVariable String jobId) throws IOException {
-        String userId = userRepository.findByEmail(userDetails.getUsername())
+            @PathVariable UUID resumeId,
+            @PathVariable UUID jobId) throws IOException {
+        UUID userId = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found")).getId();
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(() -> new IllegalArgumentException("Resume not found"));
@@ -132,7 +133,7 @@ public class ResumeController {
             throw new IllegalArgumentException("No optimized text available for this job");
         }
         byte[] pdfBytes = pdfExportService.textToPdf(optimizedText);
-        String filename = "optimized_resume_" + resumeId.substring(0, Math.min(8, resumeId.length())) + ".pdf";
+        String filename = "optimized_resume_" + resumeId.toString().substring(0, Math.min(8, resumeId.toString().length())) + ".pdf";
         String encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
