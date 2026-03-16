@@ -23,7 +23,6 @@ RUN adduser -D appuser
 
 # Copy only what's needed for production
 COPY --from=build /app/target/*.jar app.jar
-COPY --from=build /app/target/dependency target/dependency
 
 USER appuser
 EXPOSE 8080
@@ -32,5 +31,5 @@ EXPOSE 8080
 ENV JAVA_OPTS="-Xmx512m -XX:+UseG1GC"
 ENV SPRING_PROFILES_ACTIVE=production
 
-# Run from JAR with all dependencies
+# Run from JAR with all dependencies included
 ENTRYPOINT ["java", "$JAVA_OPTS", "-Djava.awt.headless=true", "-Dspring.profiles.active=$SPRING_PROFILES_ACTIVE", "-jar", "app.jar"]
