@@ -11,6 +11,9 @@ COPY backend/src/main/resources/startup.sh /app/
 # Build Maven and run application in same stage
 RUN mvn -B package -DskipTests -Dmaven.test.skip=true
 
+# Copy JAR file to correct location
+RUN cp /app/target/*.jar /app/app.jar
+
 RUN adduser -D appuser
 USER appuser
 
