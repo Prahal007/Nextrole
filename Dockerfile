@@ -7,7 +7,7 @@ RUN apk add --no-cache maven
 
 # Copy source and build in place
 COPY pom.xml .
-COPY src src
+COPY backend/src src
 
 # Build and run directly (no JAR repackaging)
 RUN mvn -B package -DskipTests -Dmaven.test.skip=true && \
