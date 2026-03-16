@@ -1,0 +1,27 @@
+# Railway Project Configuration
+# Forces Railway to use service-specific deployments
+
+[build]
+builder = "DOCKERFILE"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[variables]
+RAILWAY_DEPLOY_HOOK = "echo 'Deploying backend service...'"
+
+# Service definitions
+[[services]]
+name = "backend"
+source = "./backend"
+dockerfilePath = "./backend/Dockerfile"
+dockerContext = "./backend"
+
+[[services]]
+name = "frontend"
+source = "./frontend"
+dockerfilePath = "./frontend/Dockerfile"
+dockerContext = "./frontend"
