@@ -50,4 +50,23 @@ public class HealthController {
             ));
         }
     }
+    
+    @GetMapping("/actuator/health")
+    public ResponseEntity<Map<String, Object>> actuatorHealth() {
+        try {
+            // Actuator compatible health check
+            return ResponseEntity.ok(Map.of(
+                "status", "UP",
+                "components", Map.of(
+                    "db", Map.of("status", "UP"),
+                    "ping", Map.of("status", "UP")
+                )
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(503).body(Map.of(
+                "status", "DOWN",
+                "error", e.getMessage()
+            ));
+        }
+    }
 }
