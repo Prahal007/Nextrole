@@ -23,6 +23,11 @@ if [ ! -s "/app/app.jar" ]; then
     exit 1
 fi
 
+# Inspect JAR contents to find main class
+echo "=== JAR Inspection ==="
+echo "Checking JAR contents for main class..."
+jar tf /app/app.jar | grep -E "(PdfzenApplication|BOOT-INF)" | head -10
+
 # Start application with comprehensive logging
 echo "=== Starting Spring Boot Application ==="
 echo "Command: java $JAVA_OPTS -Djava.awt.headless=true -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar --debug"
