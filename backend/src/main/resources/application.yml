@@ -32,15 +32,15 @@ server:
   servlet:
     context-path: ""
 
-# Actuator
+# Actuator - DISABLED to avoid conflicts
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: none
   endpoint:
     health:
-      show-details: never
+      enabled: false
 
 # OpenAPI
 springdoc:
