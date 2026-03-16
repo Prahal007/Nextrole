@@ -27,9 +27,9 @@ COPY --from=build /app/target/*.jar app.jar
 USER appuser
 EXPOSE 8080
 
-# Simple startup
+# Environment variables
 ENV JAVA_OPTS="-Xmx512m -XX:+UseG1GC"
 ENV SPRING_PROFILES_ACTIVE=production
 
-# Run from JAR with all dependencies included
-ENTRYPOINT ["java", "$JAVA_OPTS", "-Djava.awt.headless=true", "-Dspring.profiles.active=$SPRING_PROFILES_ACTIVE", "-jar", "app.jar"]
+# Use shell form for environment variable expansion
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Djava.awt.headless=true -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar"]
