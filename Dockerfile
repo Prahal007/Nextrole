@@ -1,30 +1,36 @@
 # Railway Backend Service Dockerfile
-# Fix Maven source directory structure and dependencies
+# Optimized build with Maven dependency caching
 
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
 RUN apk add --no-cache maven
 
-# Copy source and build in place with correct structure
+# Copy pom.xml first for better layer caching
 COPY backend/pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy source code
 COPY backend/src/main/java src/main/java
 COPY backend/src/main/resources src/main/resources
 
-# Build Maven and copy dependencies
-RUN mvn -B package -DskipTests -Dmaven.test.skip=true && \
-    mvn dependency:copy-dependencies -DskipTests
+# Build application
+RUN mvn -B package -DskipTests -Dmaven.test.skip=true
 
-# Run with all dependencies in classpath
-RUN java -cp "target/classes:target/dependency/*" ai.pdfzen.PdfzenApplication
-
+# Production stage
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
 RUN adduser -D appuser
-USER appuser
 
+# Copy only what's needed for production
+COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/dependency target/dependency
+
+USER appuser
 EXPOSE 8080
 
-# Simple startup with all dependencies
+# Simple startup
 ENV JAVA_OPTS="-Xmx512m -XX:+UseG1GC"
 ENV SPRING_PROFILES_ACTIVE=production
 
-# Run directly from target/classes with all dependencies
-ENTRYPOINT ["java", "$JAVA_OPTS", "-Djava.awt.headless=true", "-Dspring.profiles.active=$SPRING_PROFILES_ACTIVE", "-cp", "target/classes:target/dependency/*", "ai.pdfzen.PdfzenApplication"]
+# Run from JAR with all dependencies
+ENTRYPOINT ["java", "$JAVA_OPTS", "-Djava.awt.headless=true", "-Dspring.profiles.active=$SPRING_PROFILES_ACTIVE", "-jar", "app.jar"]
