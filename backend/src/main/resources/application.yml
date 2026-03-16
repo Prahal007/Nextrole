@@ -3,23 +3,23 @@ spring:
     name: pdfzen-resume-optimizer
 
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/pdfzen}
-    username: ${DATABASE_USERNAME:pdfzen}
-    password: ${DATABASE_PASSWORD:pdfzen}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: false
     properties:
       hibernate:
         format_sql: true
         default_schema: public
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.H2Dialect
     open-in-view: false
 
   servlet:
