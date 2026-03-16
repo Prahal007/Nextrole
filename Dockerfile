@@ -6,7 +6,7 @@ WORKDIR /app
 RUN apk add --no-cache maven
 COPY backend/pom.xml .
 COPY backend/src backend/src
-RUN mvn -B package -DskipTests
+RUN mvn -B package -DskipTests && ls -la /app/backend/target/
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
