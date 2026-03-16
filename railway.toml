@@ -10,3 +10,4 @@ restartPolicyMaxRetries = 10
 [variables]
 SPRING_PROFILES_ACTIVE = "production"
 SERVER_PORT = "8080"
+HEALTH_CHECK_PATH = "/health"
