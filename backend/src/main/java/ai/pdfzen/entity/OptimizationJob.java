@@ -2,7 +2,6 @@ package ai.pdfzen.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -42,13 +41,12 @@ public class OptimizationJob {
     private String optimizedText;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "suggestions", columnDefinition = "jsonb")
+    @Column(name = "suggestions", columnDefinition = "json")
     private Map<String, Object> suggestions;
 
     @Column(name = "error_message", columnDefinition = "text")
     private String errorMessage;
 
-    @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
 
