@@ -1,16 +1,9 @@
 # Railway Docker ignore
-# Prevent Railway from building wrong files
+# Allow root Dockerfile for backend build
+# Ignore frontend build (will be deployed separately)
 
-# Ignore frontend build
 frontend/
 frontend/Dockerfile
-
-# Only allow Railway to build backend service
-backend/
-backend/Dockerfile
-
-# Ignore database (Railway provides managed PostgreSQL)
-database/
 
 # Ignore other files
 .git/
