@@ -16,20 +16,22 @@ fi
 
 echo "Found JAR file: $(ls -la /app/app.jar)"
 
-# Test JAR file integrity
+# Make JAR file executable
+chmod +x /app/app.jar
+
+# Test JAR file integrity (simplified for Alpine)
 echo "Testing JAR file integrity..."
-if ! java -jar /app/app.jar --help > /dev/null 2>&1; then
-    echo "JAR file may be corrupted or not executable"
-    echo "Attempting to check JAR contents:"
-    file /app/app.jar
+if [ ! -s "/app/app.jar" ]; then
+    echo "JAR file is empty"
+    exit 1
 fi
 
 # Start application with comprehensive logging
 echo "=== Starting Spring Boot Application ==="
 echo "Command: java $JAVA_OPTS -Djava.awt.headless=true -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar --debug"
 
-# Start in background with detailed logging
-java $JAVA_OPTS -Djava.awt.headless=true -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar --debug > /app/startup.log 2>&1 &
+# Start in background with detailed logging (use /tmp for permissions)
+java $JAVA_OPTS -Djava.awt.headless=true -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar --debug > /tmp/startup.log 2>&1 &
 JAVA_PID=$!
 
 echo "Java process started with PID: $JAVA_PID"
@@ -47,23 +49,23 @@ if kill -0 $JAVA_PID 2>/dev/null; then
     echo "Testing application health endpoint..."
     sleep 5
     
-    # Check if port 8080 is listening
-    if netstat -ln | grep -q ':8080'; then
+    # Check if port 8080 is listening (simplified for Alpine)
+    if netstat -tlnp 2>/dev/null | grep -q ':8080'; then
         echo "Port 8080 is listening - application should be ready"
         echo "=== Startup Logs (last 20 lines) ==="
-        tail -20 /app/startup.log
+        tail -20 /tmp/startup.log
         echo "=== Application Started Successfully ==="
         exit 0
     else
         echo "Port 8080 is not listening - application may have failed"
         echo "=== Full Startup Logs ==="
-        cat /app/startup.log
+        cat /tmp/startup.log
         exit 1
     fi
 else
     echo "Java process has exited"
     echo "=== Startup Logs ==="
-    cat /app/startup.log
+    cat /tmp/startup.log
     echo "=== Application Failed to Start ==="
     exit 1
 fi
