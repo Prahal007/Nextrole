@@ -29,4 +29,25 @@ public class HealthController {
             ));
         }
     }
+    
+    @GetMapping("/")
+    public ResponseEntity<Map<String, Object>> root() {
+        try {
+            // Root health check - simple status response
+            return ResponseEntity.ok(Map.of(
+                "status", "UP",
+                "service", "pdfzen-resume-optimizer",
+                "endpoint", "root",
+                "timestamp", System.currentTimeMillis(),
+                "version", "1.0.0"
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(Map.of(
+                "status", "DOWN",
+                "service", "pdfzen-resume-optimizer",
+                "error", e.getMessage(),
+                "timestamp", System.currentTimeMillis()
+            ));
+        }
+    }
 }
