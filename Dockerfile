@@ -6,14 +6,19 @@ WORKDIR /app
 RUN apk add --no-cache maven
 COPY backend/pom.xml .
 COPY backend/src backend/src
-COPY backend/src/main/resources/startup.sh /app/
-RUN mvn -B package -DskipTests && ls -la /app/backend/target/
+
+# Build Maven and verify target directory
+RUN mvn -B package -DskipTests -Dmaven.test.skip=true && ls -la /app/backend/target/ && echo "Target directory exists: $?"
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 RUN adduser -D appuser
 USER appuser
+
+# Copy JAR files with verification
 COPY --from=build /app/backend/target/*.jar app.jar
+RUN ls -la /app/backend/target/ && echo "JAR files copied: $?"
+
 EXPOSE 8080
 
 # Add debug logging
