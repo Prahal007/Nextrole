@@ -3,23 +3,23 @@ spring:
     name: pdfzen-resume-optimizer
 
   datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: 
-    driver-class-name: org.h2.Driver
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
         default_schema: public
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
 
   servlet:
@@ -31,16 +31,6 @@ server:
   port: ${SERVER_PORT:8080}
   servlet:
     context-path: ""
-
-# Actuator - DISABLED to avoid conflicts
-management:
-  endpoints:
-    web:
-      exposure:
-        include: none
-  endpoint:
-    health:
-      enabled: false
 
 # OpenAPI
 springdoc:

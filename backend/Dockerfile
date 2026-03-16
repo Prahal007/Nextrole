@@ -6,12 +6,12 @@ WORKDIR /app
 RUN apk add --no-cache maven
 
 # Copy pom.xml first for better layer caching
-COPY backend/pom.xml .
+COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
 # Copy source code
-COPY backend/src/main/java src/main/java
-COPY backend/src/main/resources src/main/resources
+COPY src/main/java src/main/java
+COPY src/main/resources src/main/resources
 
 # Build application
 RUN mvn -B package -DskipTests -Dmaven.test.skip=true
