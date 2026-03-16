@@ -6,7 +6,8 @@ WORKDIR /app
 RUN apk add --no-cache maven
 COPY backend/pom.xml .
 COPY backend/src backend/src
-RUN mvn -B package -DskipTests && mkdir -p /app/backend/target && ls -la /app/
+COPY backend/src/main/resources/startup.sh /app/
+RUN mvn -B package -DskipTests && ls -la /app/backend/target/
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
@@ -14,4 +15,10 @@ RUN adduser -D appuser
 USER appuser
 COPY --from=build /app/backend/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Add debug logging
+ENV JAVA_OPTS="-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication"
+ENV SPRING_PROFILES_ACTIVE=production
+
+# Start with startup script for better error handling
+ENTRYPOINT ["sh", "/app/startup.sh"]
