@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Starting Spring Boot application..."
+echo "=== PDFZen Application Startup ==="
 echo "Java Version: $(java -version 2>&1 | head -n 1)"
 echo "Available Memory: $(free -m)"
 echo "Current Directory: $(pwd)"
@@ -16,23 +16,54 @@ fi
 
 echo "Found JAR file: $(ls -la /app/app.jar)"
 
-# Start the application with error handling
-echo "Starting application with: java $JAVA_OPTS -Djava.awt.headless=true -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar"
+# Test JAR file integrity
+echo "Testing JAR file integrity..."
+if ! java -jar /app/app.jar --help > /dev/null 2>&1; then
+    echo "JAR file may be corrupted or not executable"
+    echo "Attempting to check JAR contents:"
+    file /app/app.jar
+fi
+
+# Start application with comprehensive logging
+echo "=== Starting Spring Boot Application ==="
+echo "Command: java $JAVA_OPTS -Djava.awt.headless=true -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar --debug"
+
+# Start in background with detailed logging
 java $JAVA_OPTS -Djava.awt.headless=true -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar --debug > /app/startup.log 2>&1 &
+JAVA_PID=$!
+
+echo "Java process started with PID: $JAVA_PID"
 
 # Wait for application to start
-echo "Waiting for application to start..."
-sleep 10
+echo "Waiting for Spring Boot to initialize..."
+sleep 15
 
-# Check if application is running
-if pgrep -f "java.*app.jar" > /dev/null; then
-    echo "Application started successfully"
-    echo "Application logs:"
-    tail -20 /app/startup.log
-    exit 0
+# Check if Java process is still running
+if kill -0 $JAVA_PID 2>/dev/null; then
+    echo "=== Java Process Status ==="
+    echo "Java process is running (PID: $JAVA_PID)"
+    
+    # Test if application is responding
+    echo "Testing application health endpoint..."
+    sleep 5
+    
+    # Check if port 8080 is listening
+    if netstat -ln | grep -q ':8080'; then
+        echo "Port 8080 is listening - application should be ready"
+        echo "=== Startup Logs (last 20 lines) ==="
+        tail -20 /app/startup.log
+        echo "=== Application Started Successfully ==="
+        exit 0
+    else
+        echo "Port 8080 is not listening - application may have failed"
+        echo "=== Full Startup Logs ==="
+        cat /app/startup.log
+        exit 1
+    fi
 else
-    echo "Application failed to start"
-    echo "Full startup logs:"
+    echo "Java process has exited"
+    echo "=== Startup Logs ==="
     cat /app/startup.log
+    echo "=== Application Failed to Start ==="
     exit 1
 fi
