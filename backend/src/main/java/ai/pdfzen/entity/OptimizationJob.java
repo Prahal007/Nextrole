@@ -42,7 +42,7 @@ public class OptimizationJob {
     private String optimizedText;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "suggestions", columnDefinition = "jsonb")
+    @Column(name = "suggestions", columnDefinition = "json")
     private Map<String, Object> suggestions;
 
     @Column(name = "error_message", columnDefinition = "text")
