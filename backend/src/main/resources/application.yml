@@ -3,9 +3,9 @@ spring:
     name: pdfzen-resume-optimizer
 
   datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
+    url: jdbc:postgresql://${{database.PGHOST}}:${{database.PGPORT}}/${{database.PGDATABASE}}
+    username: ${{database.PGUSER}}
+    password: ${{database.PGPASSWORD}}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
