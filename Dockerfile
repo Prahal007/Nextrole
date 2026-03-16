@@ -1,23 +1,18 @@
 # Railway Backend Service Dockerfile
-# Forces Railway to build backend service correctly
+# Single-stage build for better reliability
 
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 RUN apk add --no-cache maven
 COPY backend/pom.xml .
 COPY backend/src backend/src
+COPY backend/src/main/resources/startup.sh /app/
 
-# Build Maven and verify target directory
-RUN mvn -B package -DskipTests -Dmaven.test.skip=true && ls -la /app/backend/target/ && echo "Target directory exists: $?"
+# Build Maven and run application in same stage
+RUN mvn -B package -DskipTests -Dmaven.test.skip=true
 
-FROM eclipse-temurin:21-jre-alpine
-WORKDIR /app
 RUN adduser -D appuser
 USER appuser
-
-# Copy JAR files with verification
-COPY --from=build /app/backend/target/*.jar app.jar
-RUN ls -la /app/backend/target/ && echo "JAR files copied: $?"
 
 EXPOSE 8080
 
