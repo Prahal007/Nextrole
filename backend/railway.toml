@@ -2,8 +2,8 @@
 builder = "DOCKERFILE"
 
 [deploy]
-healthcheckPath = "/"
-healthcheckTimeout = 100
+healthcheckPath = "/health"
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
@@ -11,9 +11,5 @@ restartPolicyMaxRetries = 10
 SPRING_PROFILES_ACTIVE = "production"
 SERVER_PORT = "8080"
 
-# These variables are already configured in Railway:
-# DATABASE_URL = "your_configured_value"
-# DATABASE_USERNAME = "your_configured_value" 
-# DATABASE_PASSWORD = "your_configured_value"
-# APP_AI_API_KEY = "your_configured_value"
-# OPENAI_API_KEY = "your_configured_value"
+# Railway PostgreSQL variables (automatically provided)
+# PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE

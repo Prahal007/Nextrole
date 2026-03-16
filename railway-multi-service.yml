@@ -1,0 +1,21 @@
+# Railway Multi-Service Configuration
+
+services:
+  # PostgreSQL Database Service
+  database:
+    source: ./database
+    name: PostgreSQL Database
+    
+  # Backend API Service  
+  backend:
+    source: ./backend
+    name: PDFZen Backend API
+    depends_on:
+      - database
+      
+  # Frontend Web Service
+  frontend:
+    source: ./frontend  
+    name: PDFZen Frontend
+    depends_on:
+      - backend
