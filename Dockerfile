@@ -1,28 +1,26 @@
 # Railway Backend Service Dockerfile
-# Single-stage build for better reliability
+# Simple direct approach
 
 FROM eclipse-temurin:21-jdk-alpine
-WORKDIR /app
+WORKDIR /app/backend
 RUN apk add --no-cache maven
-COPY backend/pom.xml .
-COPY backend/src backend/src
-COPY backend/src/main/resources/startup.sh /app/
 
-# Build Maven and force inclusion of all classes
+# Copy source and build in place
+COPY pom.xml .
+COPY src src
+
+# Build and run directly (no JAR repackaging)
 RUN mvn -B package -DskipTests -Dmaven.test.skip=true && \
-    mvn package -DskipTests -Dmaven.test.skip=true -Dspring-boot.repackage.skip=false
-
-# Copy JAR file to correct location
-RUN cp /app/target/*.jar /app/app.jar
+    java -cp target/classes:target/dependency/* ai.pdfzen.PdfzenApplication
 
 RUN adduser -D appuser
 USER appuser
 
 EXPOSE 8080
 
-# Add debug logging
-ENV JAVA_OPTS="-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication"
+# Simple startup
+ENV JAVA_OPTS="-Xmx512m -XX:+UseG1GC"
 ENV SPRING_PROFILES_ACTIVE=production
 
-# Start with startup script for better error handling
-ENTRYPOINT ["sh", "/app/startup.sh"]
+# Run directly from target/classes
+ENTRYPOINT ["java", "$JAVA_OPTS", "-Djava.awt.headless=true", "-Dspring.profiles.active=$SPRING_PROFILES_ACTIVE", "-cp", "target/classes:target/dependency/*", "ai.pdfzen.PdfzenApplication"]
