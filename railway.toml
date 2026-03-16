@@ -10,3 +10,5 @@ restartPolicyMaxRetries = 10
 [variables]
 SPRING_PROFILES_ACTIVE = "production"
 SERVER_PORT = "8080"
+
+# Updated health check timeout for Spring Boot startup
