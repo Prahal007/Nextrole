@@ -8,8 +8,9 @@ COPY backend/pom.xml .
 COPY backend/src backend/src
 COPY backend/src/main/resources/startup.sh /app/
 
-# Build Maven and run application in same stage
-RUN mvn -B package -DskipTests -Dmaven.test.skip=true
+# Build Maven and force inclusion of all classes
+RUN mvn -B package -DskipTests -Dmaven.test.skip=true && \
+    mvn package -DskipTests -Dmaven.test.skip=true -Dspring-boot.repackage.skip=false
 
 # Copy JAR file to correct location
 RUN cp /app/target/*.jar /app/app.jar
