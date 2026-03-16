@@ -12,13 +12,13 @@ import javax.sql.DataSource;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/health")
+@RequestMapping("")
 public class HealthController {
 
     @Autowired
     private DataSource dataSource;
 
-    @GetMapping
+    @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> health() {
         try {
             // Test database connection
