@@ -1,0 +1,43 @@
+services:
+  db:
+    type: postgres
+    name: PostgreSQL Database
+    plan: free
+    
+  backend:
+    type: web
+    name: PDFZen Backend API
+    plan: free
+    sourceDir: backend
+    dockerfilePath: backend/Dockerfile
+    healthcheckPath: /health
+    env:
+      - key: DATABASE_URL
+        value: jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}
+      - key: DATABASE_USERNAME
+        value: ${{Postgres.PGUSER}}
+      - key: DATABASE_PASSWORD
+        value: ${{Postgres.PGPASSWORD}}
+      - key: SERVER_PORT
+        value: 8080
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: AI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+        
+  frontend:
+    type: web
+    name: PDFZen Frontend
+    plan: free
+    sourceDir: frontend
+    dockerfilePath: frontend/Dockerfile
+    healthcheckPath: /
+    env:
+      - key: API_URL
+        value: ${{backend.URL}}
+        
+plugins:
+  - name: postgres
+    type: database

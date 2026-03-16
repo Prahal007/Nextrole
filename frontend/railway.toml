@@ -10,4 +10,5 @@ restartPolicyMaxRetries = 10
 [variables]
 NODE_ENV = "production"
 PORT = "3000"
-API_URL = "https://your-backend-url.railway.app/api"
+# Railway automatically sets this to connect to backend service
+API_URL = "${{backend.URL}}"

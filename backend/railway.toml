@@ -2,7 +2,7 @@
 builder = "DOCKERFILE"
 
 [deploy]
-healthcheckPath = "/api/health"
+healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
@@ -10,3 +10,12 @@ restartPolicyMaxRetries = 10
 [variables]
 SPRING_PROFILES_ACTIVE = "production"
 SERVER_PORT = "8080"
+
+# Railway will automatically set these from PostgreSQL service
+# DATABASE_URL = "jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}"
+# DATABASE_USERNAME = "${{Postgres.PGUSER}}"
+# DATABASE_PASSWORD = "${{Postgres.PGPASSWORD}}"
+
+# Set these in Railway dashboard
+# AI_API_KEY = "your_openai_api_key"
+# OPENAI_API_KEY = "your_openai_api_key"
