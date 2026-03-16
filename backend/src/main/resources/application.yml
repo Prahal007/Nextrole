@@ -1,6 +1,10 @@
 spring:
   application:
     name: pdfzen-resume-optimizer
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
 
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/pdfzen}
